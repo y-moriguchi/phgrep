@@ -15,24 +15,36 @@
  */
 package net.morilib.phgrep;
 
-public interface PhgrepBuilder {
+public interface PhgrepState {
 
 	/**
 	 * 
-	 * @param pos
-	 * @param z
+	 * @param ch
+	 * @param s
 	 */
-	public void appendAlternation(boolean pos, String... z);
+	public void putTransition(int ch, PhgrepState s);
 
 	/**
 	 * 
-	 * @param string
+	 * @param s
 	 */
-	public void appendString(String string);
+	public void putSpaceTrasition(PhgrepState s);
+
+	/**
+	 * 
+	 * @param s
+	 */
+	public void putOtherTransition(PhgrepState s);
+
+	/**
+	 * 
+	 * @param s
+	 */
+	public void putEmptyTransition(PhgrepState s);
 
 	/**
 	 * 
 	 */
-	public void appendSpaces();
+	public void markLastState();
 
 }
