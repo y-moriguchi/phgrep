@@ -15,7 +15,22 @@
  */
 package net.morilib.phgrep;
 
+import java.util.Set;
+
 public interface PhgrepState {
+
+	/**
+	 * 
+	 * @return
+	 */
+	public Set<Integer> getLabels();
+
+	/**
+	 * 
+	 * @param ch
+	 * @return
+	 */
+	public PhgrepState getTransition(int ch);
 
 	/**
 	 * 

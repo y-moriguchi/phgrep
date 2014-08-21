@@ -17,7 +17,9 @@ package net.morilib.phgrep;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class PhgrepParser {
 
@@ -74,6 +76,26 @@ public class PhgrepParser {
 	}
 
 	//
+	private void addCommonEdges(PhgrepState p, PhgrepState n) {
+		Set<Integer> c, d;
+
+		c = new HashSet<Integer>(p.getLabels());
+		d = new HashSet<Integer>(p.getLabels());
+		c.retainAll(n.getLabels());  // intersection
+		d.removeAll(n.getLabels());  // difference of the sets
+
+		// traverse common edges
+		for(int x : c) {
+			addCommonEdges(p.getTransition(x), n.getTransition(x));
+		}
+
+		// add edges to the positive states
+		for(int x : d) {
+			n.putTransition(x, p.getTransition(x));
+		}
+	}
+
+	//
 	private PhgrepState buildMachine() {
 		PhgrepState n, p, v, x = null, r = null;
 		List<PhgrepState> ln, lp;
@@ -123,6 +145,7 @@ public class PhgrepParser {
 				for(PhgrepState a : lp) {
 					a.putEmptyTransition(x);
 				}
+				addCommonEdges(p, n);
 			}
 		}
 		x.markLastState();
