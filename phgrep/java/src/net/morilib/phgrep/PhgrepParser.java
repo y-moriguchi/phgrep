@@ -55,59 +55,6 @@ public class PhgrepParser {
 	}
 
 	//
-	private void appendAlternation(boolean pos, String[] z) {
-		if(pos) {
-			now.positive.addAll(Arrays.asList(z));
-			blocks.add(now);
-			now = new Block();
-		} else {
-			now.negative.addAll(Arrays.asList(z));
-		}
-	}
-
-	//
-	private void appendSpaces() {
-		now.spaces = true;
-		blocks.add(now);
-		now = new Block();
-	}
-
-	//
-	private void appendString(String s) {
-		now.positive.add(s);
-		blocks.add(now);
-		now = new Block();
-	}
-
-	//
-	private int split(String s, int p, boolean pos) {
-		String[] a, z;
-		int k, v, w;
-
-		v = p;
-		if((p = s.indexOf(')', p + 1)) < 0) {
-			throw new IllegalArgumentException();
-		}
-
-		a = new String[A_INIT];
-		for(k = 0; v < p;) {
-			if(k >= a.length) {
-				z = a;
-				a = new String[a.length * 2];
-				System.arraycopy(z, 0, a, 0, z.length);
-			}
-			w = v;
-			v = (v = s.indexOf('|', v + 1)) < 0 ? p : v;
-			a[k++] = s.substring(w, v);
-		}
-
-		z = new String[k];
-		System.arraycopy(a, 0, z, 0, k);
-		appendAlternation(pos, z);
-		return p;
-	}
-
-	//
 	private void buildTrie(PhgrepState s, List<String> l, int p,
 			boolean pos, List<PhgrepState> ss) {
 		PhgrepState r;
@@ -180,6 +127,61 @@ public class PhgrepParser {
 		}
 		x.markLastState();
 		return r;
+	}
+
+	//
+	private void appendAlternation(boolean pos, String[] z) {
+		if(pos) {
+			now.positive.addAll(Arrays.asList(z));
+			blocks.add(now);
+			now = new Block();
+		} else {
+			now.negative.addAll(Arrays.asList(z));
+		}
+	}
+
+	//
+	private void appendSpaces() {
+		now.spaces = true;
+		blocks.add(now);
+		now = new Block();
+	}
+
+	//
+	private void appendString(String s) {
+		now.positive.add(s);
+		blocks.add(now);
+		now = new Block();
+	}
+
+	//
+	private int split(String s, int p, boolean pos) {
+		String[] a, z;
+		int k, v, w;
+
+		v = p;
+		if((p = s.indexOf(')', p + 1)) < 0) {
+			throw new IllegalArgumentException();
+		}
+
+		a = new String[A_INIT];
+		for(k = 0; v < p;) {
+			if(k >= a.length) {
+				z = a;
+				a = new String[a.length * 2];
+				System.arraycopy(z, 0, a, 0, z.length);
+			}
+			w = v;
+			v = (v = s.indexOf('|', v + 1)) < 0 ? p : v;
+			if(w < v) {
+				a[k++] = s.substring(w, v);
+			}
+		}
+
+		z = new String[k];
+		System.arraycopy(a, 0, z, 0, k);
+		appendAlternation(pos, z);
+		return p;
 	}
 
 	/**
