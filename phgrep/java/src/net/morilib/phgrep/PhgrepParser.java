@@ -204,6 +204,7 @@ public class PhgrepParser {
 			} else if(s.startsWith("  ")) {
 				appendSpaces();
 				while(s.charAt(p++) == ' ');
+				v = p;
 			} else {
 				p++;
 			}
